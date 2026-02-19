@@ -49,7 +49,7 @@ public class ProdutoController {
 
     @Operation(
             summary = "Atualizar produto",
-            description = "Atualiza parcialmente um produto. Apenas campos preenchidos serão alterados."
+            description = "Atualiza parcialmente um produto. Apenas campos preenchidos são alterados."
     )
     @PutMapping("/{id}")
     public ResponseEntity<Produto> atualizar(@PathVariable Long id, @RequestBody Produto produto) {

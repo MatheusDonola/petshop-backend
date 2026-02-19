@@ -1,7 +1,8 @@
 package com.petshop.entity;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 public class Pet {
@@ -18,6 +19,18 @@ public class Pet {
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pet")
+    private List<Servico> servicos;
+
+    public List<Servico> getServicos() {
+        return servicos;
+    }
+
+    public void setServicos(List<Servico> servicos) {
+        this.servicos = servicos;
+    }
 
     public Long getId() {
         return id;
