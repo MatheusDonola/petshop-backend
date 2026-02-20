@@ -1,5 +1,6 @@
 package com.petshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class Cliente {
     private String email;
 
     @OneToMany(mappedBy = "cliente")
+    @JsonIgnore
     private List<Pet> pets;
 
     public Long getId() {

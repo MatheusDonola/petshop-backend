@@ -1,8 +1,10 @@
 package com.petshop.service;
 
+import com.petshop.entity.Pet;
 import com.petshop.entity.Servico;
 import com.petshop.exception.DadosInvalidosException;
 import com.petshop.exception.RegistroNaoEncontradoException;
+import com.petshop.repository.PetRepository;
 import com.petshop.repository.ServicoRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,11 @@ import java.util.List;
 public class ServicoService {
 
     private final ServicoRepository servicoRepository;
+    private final PetRepository petRepository;
 
-    public ServicoService(ServicoRepository servicoRepository) {
+    public ServicoService(ServicoRepository servicoRepository, PetRepository petRepository) {
         this.servicoRepository = servicoRepository;
+        this.petRepository = petRepository;
     }
 
     public Servico criar(Servico servico) {
@@ -38,6 +42,11 @@ public class ServicoService {
             throw new DadosInvalidosException("Pet é obrigatório (informe o pet.id).");
         }
 
+        Long petId = servico.getPet().getId();
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new RegistroNaoEncontradoException("Pet não encontrado. id=" + petId));
+        servico.setPet(pet);
+
         if (servico.getData() == null) {
             servico.setData(java.time.LocalDateTime.now());
         }
@@ -48,6 +57,7 @@ public class ServicoService {
     public List<Servico> listarTodos() {
         return servicoRepository.findAll();
     }
+
     public Servico buscarPorId(Long id) {
         return servicoRepository.findById(id)
                 .orElseThrow(() -> new RegistroNaoEncontradoException("Serviço não encontrado. id=" + id));
@@ -81,7 +91,10 @@ public class ServicoService {
         }
 
         if (dadosNovos.getPet() != null && dadosNovos.getPet().getId() != null) {
-            existente.setPet(dadosNovos.getPet());
+            Long petId = dadosNovos.getPet().getId();
+            Pet pet = petRepository.findById(petId)
+                    .orElseThrow(() -> new RegistroNaoEncontradoException("Pet não encontrado. id=" + petId));
+            existente.setPet(pet);
         }
 
         return servicoRepository.save(existente);
@@ -91,6 +104,4 @@ public class ServicoService {
         Servico existente = buscarPorId(id);
         servicoRepository.delete(existente);
     }
-
-
 }
