@@ -4,6 +4,7 @@ import com.petshop.entity.Pet;
 import com.petshop.service.PetService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -34,13 +35,14 @@ public class PetController {
     }
 
     @PutMapping("/{id}")
-    public Pet atualizar(@PathVariable Long id, @RequestBody Pet pet) {
-        return petService.atualizar(id, pet);
+    public ResponseEntity<String> atualizar(@PathVariable Long id, @RequestBody Pet pet) {
+        petService.atualizar(id, pet);
+        return ResponseEntity.ok("Pet de id " + id + " alterado com sucesso.");
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletar(@PathVariable Long id) {
+    public ResponseEntity<String> deletar(@PathVariable Long id) {
         petService.deletar(id);
+        return ResponseEntity.ok("Pet de id " + id + " deletado com sucesso.");
     }
 }

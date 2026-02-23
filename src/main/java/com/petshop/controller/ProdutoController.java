@@ -52,18 +52,20 @@ public class ProdutoController {
             description = "Atualiza parcialmente um produto. Apenas campos preenchidos são alterados."
     )
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @RequestBody Produto produto) {
-        Produto atualizado = produtoService.atualizar(id, produto);
-        return ResponseEntity.ok(atualizado);
+    public ResponseEntity<String> atualizar(@PathVariable Long id, @RequestBody Produto produto) {
+        produtoService.atualizar(id, produto);
+        return ResponseEntity.ok("Produto de id " + id + " alterado com sucesso.");
     }
+
 
     @Operation(
             summary = "Deletar produto",
             description = "Remove um produto pelo ID. Se não existir, retorna 404."
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<String> deletar(@PathVariable Long id) {
         produtoService.deletar(id);
-        return ResponseEntity.noContent().build(); // 204
+        return ResponseEntity.ok("Produto de id " + id + " deletado com sucesso.");
     }
 }
+

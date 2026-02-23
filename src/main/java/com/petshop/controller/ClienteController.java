@@ -52,9 +52,9 @@ public class ClienteController {
             description = "Atualiza parcialmente um cliente. Apenas campos preenchidos são alterados."
     )
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
-        Cliente atualizado = clienteService.atualizar(id, cliente);
-        return ResponseEntity.ok(atualizado);
+    public ResponseEntity<String> atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
+        clienteService.atualizar(id, cliente);
+        return ResponseEntity.ok("Cliente de id " + id + " alterado com sucesso.");
     }
 
     @Operation(
@@ -62,8 +62,8 @@ public class ClienteController {
             description = "Remove um cliente pelo ID. Se não existir, retorna 404."
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<String> deletar(@PathVariable Long id) {
         clienteService.deletar(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Cliente de id " + id + " deletado com sucesso.");
     }
 }
