@@ -38,6 +38,10 @@ public class PetService {
         existente.setEspecie(dados.getEspecie());
         existente.setRaca(dados.getRaca());
         existente.setPorte(dados.getPorte());
+        existente.setIdade(dados.getIdade());
+        existente.setSexo(dados.getSexo());
+        existente.setPeso(dados.getPeso());
+        existente.setObservacao(dados.getObservacao());
         existente.setCliente(dados.getCliente());
 
         return petRepository.save(existente);
