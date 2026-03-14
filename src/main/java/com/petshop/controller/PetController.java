@@ -1,10 +1,12 @@
 package com.petshop.controller;
 
+import com.petshop.dto.PetResponseDTO;
 import com.petshop.entity.Pet;
 import com.petshop.service.PetService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import com.petshop.dto.PetResponseDTO;
 
 import java.util.List;
 
@@ -24,7 +26,8 @@ public class PetController {
     }
 
     @GetMapping("/{id}")
-    public Pet buscarPorId(@PathVariable Long id) {
+    public PetResponseDTO buscarPorId(@PathVariable Long id)
+    {
         return petService.buscarPorId(id);
     }
 

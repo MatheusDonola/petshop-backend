@@ -14,6 +14,31 @@ public class Pet {
     private Long id;
 
     private String nome;
+    private String especie;
+    private String raca;
+    private String porte;
+    private Integer idade;
+    private String sexo;
+    private BigDecimal peso;
+
+    @Column(length = 500)
+    private String observacao;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pet")
+    private List<Servico> servicos;
+
+    public List<Servico> getServicos() {
+        return servicos;
+    }
+
+    public void setServicos(List<Servico> servicos) {
+        this.servicos = servicos;
+    }
 
     public Integer getIdade() {
         return idade;
@@ -45,32 +70,6 @@ public class Pet {
 
     public void setObservacao(String observacao) {
         this.observacao = observacao;
-    }
-
-    private String especie;
-    private String raca;
-    private String porte;
-    private Integer idade;
-    private String sexo;
-    private BigDecimal peso;
-
-    @Column(length = 500)
-    private String observacao;
-
-    @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private Cliente cliente;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "pet")
-    private List<Servico> servicos;
-
-    public List<Servico> getServicos() {
-        return servicos;
-    }
-
-    public void setServicos(List<Servico> servicos) {
-        this.servicos = servicos;
     }
 
     public Long getId() {

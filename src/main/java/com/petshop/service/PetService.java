@@ -1,5 +1,6 @@
 package com.petshop.service;
 
+import com.petshop.dto.PetResponseDTO;
 import com.petshop.entity.Pet;
 import com.petshop.exception.DadosInvalidosException;
 import com.petshop.exception.RegistroNaoEncontradoException;
@@ -21,9 +22,14 @@ public class PetService {
         return petRepository.findAll();
     }
 
-    public Pet buscarPorId(Long id) {
+    public Pet buscarEntidadePorId(Long id) {
         return petRepository.findById(id)
                 .orElseThrow(() -> new RegistroNaoEncontradoException("Pet não encontrado."));
+    }
+
+    public PetResponseDTO buscarPorId(Long id) {
+        Pet pet = buscarEntidadePorId(id);
+        return converterParaResponseDTO(pet);
     }
 
     public Pet criar(Pet pet) {
@@ -32,7 +38,7 @@ public class PetService {
     }
 
     public Pet atualizar(Long id, Pet dados) {
-        Pet existente = buscarPorId(id);
+        Pet existente = buscarEntidadePorId(id);
 
         existente.setNome(dados.getNome());
         existente.setEspecie(dados.getEspecie());
@@ -48,7 +54,7 @@ public class PetService {
     }
 
     public void deletar(Long id) {
-        Pet existente = buscarPorId(id);
+        Pet existente = buscarEntidadePorId(id);
         petRepository.delete(existente);
     }
 
@@ -59,5 +65,25 @@ public class PetService {
         if (pet.getCliente() == null || pet.getCliente().getId() == null) {
             throw new DadosInvalidosException("Cliente (id) é obrigatório.");
         }
+    }
+
+    private PetResponseDTO converterParaResponseDTO(Pet pet) {
+        PetResponseDTO dto = new PetResponseDTO();
+        dto.setId(pet.getId());
+        dto.setNome(pet.getNome());
+        dto.setEspecie(pet.getEspecie());
+        dto.setRaca(pet.getRaca());
+        dto.setPorte(pet.getPorte());
+        dto.setIdade(pet.getIdade());
+        dto.setSexo(pet.getSexo());
+        dto.setPeso(pet.getPeso());
+        dto.setObservacao(pet.getObservacao());
+
+        if (pet.getCliente() != null) {
+            dto.setClienteId(pet.getCliente().getId());
+            dto.setClienteNome(pet.getCliente().getNome());
+        }
+
+        return dto;
     }
 }
