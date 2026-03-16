@@ -1,9 +1,12 @@
 package com.petshop.service;
 
+import com.petshop.dto.PetRequestDTO;
 import com.petshop.dto.PetResponseDTO;
+import com.petshop.entity.Cliente;
 import com.petshop.entity.Pet;
 import com.petshop.exception.DadosInvalidosException;
 import com.petshop.exception.RegistroNaoEncontradoException;
+import com.petshop.repository.ClienteRepository;
 import com.petshop.repository.PetRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +16,18 @@ import java.util.List;
 public class PetService {
 
     private final PetRepository petRepository;
+    private final ClienteRepository clienteRepository;
 
-    public PetService(PetRepository petRepository) {
+    public PetService(PetRepository petRepository, ClienteRepository clienteRepository) {
         this.petRepository = petRepository;
+        this.clienteRepository = clienteRepository;
     }
 
-    public List<Pet> listar() {
-        return petRepository.findAll();
+    public List<PetResponseDTO> listar() {
+        return petRepository.findAll()
+                .stream()
+                .map(this::converterParaResponseDTO)
+                .toList();
     }
 
     public Pet buscarEntidadePorId(Long id) {
@@ -32,9 +40,25 @@ public class PetService {
         return converterParaResponseDTO(pet);
     }
 
-    public Pet criar(Pet pet) {
+    public PetResponseDTO criar(PetRequestDTO dto) {
+        Cliente cliente = clienteRepository.findById(dto.getClienteId())
+                .orElseThrow(() -> new RegistroNaoEncontradoException("Cliente não encontrado."));
+
+        Pet pet = new Pet();
+        pet.setNome(dto.getNome());
+        pet.setEspecie(dto.getEspecie());
+        pet.setRaca(dto.getRaca());
+        pet.setPorte(dto.getPorte());
+        pet.setIdade(dto.getIdade());
+        pet.setSexo(dto.getSexo());
+        pet.setPeso(dto.getPeso());
+        pet.setObservacao(dto.getObservacao());
+        pet.setCliente(cliente);
+
         validarCriacao(pet);
-        return petRepository.save(pet);
+
+        Pet salvo = petRepository.save(pet);
+        return converterParaResponseDTO(salvo);
     }
 
     public Pet atualizar(Long id, Pet dados) {
@@ -61,6 +85,9 @@ public class PetService {
     private void validarCriacao(Pet pet) {
         if (pet.getNome() == null || pet.getNome().isBlank()) {
             throw new DadosInvalidosException("Nome é obrigatório.");
+        }
+        if (pet.getEspecie() == null || pet.getEspecie().isBlank()) {
+            throw new DadosInvalidosException("Espécie é obrigatória.");
         }
         if (pet.getCliente() == null || pet.getCliente().getId() == null) {
             throw new DadosInvalidosException("Cliente (id) é obrigatório.");

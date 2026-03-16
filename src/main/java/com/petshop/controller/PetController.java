@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import com.petshop.dto.PetResponseDTO;
-
+import com.petshop.dto.PetRequestDTO;
 import java.util.List;
 
 @RestController
@@ -21,8 +21,8 @@ public class PetController {
     }
 
     @GetMapping
-    public List<Pet> listar() {
-        return petService.listar();
+    public ResponseEntity<List<PetResponseDTO>> listar() {
+        return ResponseEntity.ok(petService.listar());
     }
 
     @GetMapping("/{id}")
@@ -32,9 +32,8 @@ public class PetController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Pet criar(@RequestBody Pet pet) {
-        return petService.criar(pet);
+    public ResponseEntity<PetResponseDTO> criar(@RequestBody PetRequestDTO dto) {
+        return ResponseEntity.ok(petService.criar(dto));
     }
 
     @PutMapping("/{id}")
