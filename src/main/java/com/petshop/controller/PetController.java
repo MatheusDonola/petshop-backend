@@ -37,9 +37,11 @@ public class PetController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> atualizar(@PathVariable Long id, @RequestBody Pet pet) {
-        petService.atualizar(id, pet);
-        return ResponseEntity.ok("Pet de id " + id + " alterado com sucesso.");
+    public ResponseEntity<PetResponseDTO> atualizar(
+            @PathVariable Long id,
+            @RequestBody PetRequestDTO dto) {
+
+        return ResponseEntity.ok(petService.atualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")

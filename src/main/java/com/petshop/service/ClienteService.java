@@ -5,7 +5,8 @@ import com.petshop.exception.DadosInvalidosException;
 import com.petshop.exception.RegistroNaoEncontradoException;
 import com.petshop.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
-
+import com.petshop.dto.ClienteRequestDTO;
+import com.petshop.dto.ClienteResponseDTO;
 import java.util.List;
 
 @Service
@@ -17,40 +18,61 @@ public class ClienteService {
         this.clienteRepository = clienteRepository;
     }
 
-    public Cliente criar(Cliente cliente) {
+    public ClienteResponseDTO criar(ClienteRequestDTO dto) {
+        Cliente cliente = new Cliente();
+        cliente.setNome(dto.getNome());
+        cliente.setTelefone(dto.getTelefone());
+        cliente.setEmail(dto.getEmail());
+        cliente.setEndereco(dto.getEndereco());
+
         validarCriacao(cliente);
-        return clienteRepository.save(cliente);
+
+        Cliente salvo = clienteRepository.save(cliente);
+        return converterParaResponseDTO(salvo);
     }
 
-    public List<Cliente> listarTodos() {
-        return clienteRepository.findAll();
+    public List<ClienteResponseDTO> listarTodos() {
+        return clienteRepository.findAll()
+                .stream()
+                .map(this::converterParaResponseDTO)
+                .toList();
     }
 
-    public Cliente buscarPorId(Long id) {
+    public Cliente buscarEntidadePorId(Long id) {
         return clienteRepository.findById(id)
                 .orElseThrow(() -> new RegistroNaoEncontradoException("Cliente não encontrado. id=" + id));
     }
 
-    public Cliente atualizar(Long id, Cliente dadosNovos) {
-        Cliente existente = buscarPorId(id);
+    public ClienteResponseDTO buscarPorId(Long id) {
+        Cliente cliente = buscarEntidadePorId(id);
+        return converterParaResponseDTO(cliente);
+    }
 
-        if (dadosNovos.getNome() != null && !dadosNovos.getNome().isBlank()) {
-            existente.setNome(dadosNovos.getNome());
+    public ClienteResponseDTO atualizar(Long id, ClienteRequestDTO dto) {
+        Cliente existente = buscarEntidadePorId(id);
+
+        if (dto.getNome() != null && !dto.getNome().isBlank()) {
+            existente.setNome(dto.getNome());
         }
 
-        if (dadosNovos.getTelefone() != null && !dadosNovos.getTelefone().isBlank()) {
-            existente.setTelefone(dadosNovos.getTelefone());
+        if (dto.getTelefone() != null && !dto.getTelefone().isBlank()) {
+            existente.setTelefone(dto.getTelefone());
         }
 
-        if (dadosNovos.getEmail() != null && !dadosNovos.getEmail().isBlank()) {
-            existente.setEmail(dadosNovos.getEmail());
+        if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
+            existente.setEmail(dto.getEmail());
         }
 
-        return clienteRepository.save(existente);
+        if (dto.getEndereco() != null && !dto.getEndereco().isBlank()) {
+            existente.setEndereco(dto.getEndereco());
+        }
+
+        Cliente atualizado = clienteRepository.save(existente);
+        return converterParaResponseDTO(atualizado);
     }
 
     public void deletar(Long id) {
-        Cliente existente = buscarPorId(id);
+        Cliente existente = buscarEntidadePorId(id);
         clienteRepository.delete(existente);
     }
 
@@ -68,5 +90,15 @@ public class ClienteService {
         if (cliente.getEmail() == null || cliente.getEmail().isBlank()) {
             throw new DadosInvalidosException("Email é obrigatório.");
         }
+    }
+
+    private ClienteResponseDTO converterParaResponseDTO(Cliente cliente) {
+        ClienteResponseDTO dto = new ClienteResponseDTO();
+        dto.setId(cliente.getId());
+        dto.setNome(cliente.getNome());
+        dto.setTelefone(cliente.getTelefone());
+        dto.setEmail(cliente.getEmail());
+        dto.setEndereco(cliente.getEndereco());
+        return dto;
     }
 }

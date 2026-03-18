@@ -1,6 +1,7 @@
 package com.petshop.controller;
 
-import com.petshop.entity.Cliente;
+import com.petshop.dto.ClienteRequestDTO;
+import com.petshop.dto.ClienteResponseDTO;
 import com.petshop.service.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
@@ -24,8 +25,8 @@ public class ClienteController {
             description = "Cria um novo cliente. Campos obrigatórios: nome, telefone e email."
     )
     @PostMapping
-    public ResponseEntity<Cliente> criar(@RequestBody Cliente cliente) {
-        Cliente criado = clienteService.criar(cliente);
+    public ResponseEntity<ClienteResponseDTO> criar(@RequestBody ClienteRequestDTO dto) {
+        ClienteResponseDTO criado = clienteService.criar(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
 
@@ -34,7 +35,7 @@ public class ClienteController {
             description = "Retorna todos os clientes cadastrados."
     )
     @GetMapping
-    public ResponseEntity<List<Cliente>> listarTodos() {
+    public ResponseEntity<List<ClienteResponseDTO>> listarTodos() {
         return ResponseEntity.ok(clienteService.listarTodos());
     }
 
@@ -43,7 +44,7 @@ public class ClienteController {
             description = "Retorna um cliente pelo ID. Se não existir retorna 404."
     )
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<ClienteResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(clienteService.buscarPorId(id));
     }
 
@@ -52,9 +53,10 @@ public class ClienteController {
             description = "Atualiza parcialmente um cliente. Apenas campos preenchidos são alterados."
     )
     @PutMapping("/{id}")
-    public ResponseEntity<String> atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
-        clienteService.atualizar(id, cliente);
-        return ResponseEntity.ok("Cliente de id " + id + " alterado com sucesso.");
+    public ResponseEntity<ClienteResponseDTO> atualizar(
+            @PathVariable Long id,
+            @RequestBody ClienteRequestDTO dto) {
+        return ResponseEntity.ok(clienteService.atualizar(id, dto));
     }
 
     @Operation(

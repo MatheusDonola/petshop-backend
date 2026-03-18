@@ -61,20 +61,26 @@ public class PetService {
         return converterParaResponseDTO(salvo);
     }
 
-    public Pet atualizar(Long id, Pet dados) {
+    public PetResponseDTO atualizar(Long id, PetRequestDTO dto) {
+
         Pet existente = buscarEntidadePorId(id);
 
-        existente.setNome(dados.getNome());
-        existente.setEspecie(dados.getEspecie());
-        existente.setRaca(dados.getRaca());
-        existente.setPorte(dados.getPorte());
-        existente.setIdade(dados.getIdade());
-        existente.setSexo(dados.getSexo());
-        existente.setPeso(dados.getPeso());
-        existente.setObservacao(dados.getObservacao());
-        existente.setCliente(dados.getCliente());
+        Cliente cliente = clienteRepository.findById(dto.getClienteId())
+                .orElseThrow(() -> new RegistroNaoEncontradoException("Cliente não encontrado."));
 
-        return petRepository.save(existente);
+        existente.setNome(dto.getNome());
+        existente.setEspecie(dto.getEspecie());
+        existente.setRaca(dto.getRaca());
+        existente.setPorte(dto.getPorte());
+        existente.setIdade(dto.getIdade());
+        existente.setSexo(dto.getSexo());
+        existente.setPeso(dto.getPeso());
+        existente.setObservacao(dto.getObservacao());
+        existente.setCliente(cliente);
+
+        Pet atualizado = petRepository.save(existente);
+
+        return converterParaResponseDTO(atualizado);
     }
 
     public void deletar(Long id) {

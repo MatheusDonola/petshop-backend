@@ -1,35 +1,15 @@
-package com.petshop.entity;
+package com.petshop.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import java.util.List;
+public class ClienteResponseDTO {
 
-@Entity
-public class Cliente {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nome;
     private String telefone;
     private String email;
     private String endereco;
 
-    @OneToMany(mappedBy = "cliente")
-    @JsonIgnore
-    private List<Pet> pets;
-
     public Long getId() {
         return id;
-    }
-
-    public String getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
     }
 
     public void setId(Long id) {
@@ -60,11 +40,11 @@ public class Cliente {
         this.email = email;
     }
 
-    public List<Pet> getPets() {
-        return pets;
+    public String getEndereco() {
+        return endereco;
     }
 
-    public void setPets(List<Pet> pets) {
-        this.pets = pets;
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
     }
 }
