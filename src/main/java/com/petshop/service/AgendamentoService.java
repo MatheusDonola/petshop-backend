@@ -1,79 +1,109 @@
 package com.petshop.service;
 
-import com.petshop.entity.Pet;
+import com.petshop.dto.AgendamentoRequestDTO;
+import com.petshop.dto.AgendamentoResponseDTO;
 import com.petshop.entity.Agendamento;
+import com.petshop.entity.Cliente;
+import com.petshop.entity.Pet;
+import com.petshop.entity.Servico;
 import com.petshop.exception.DadosInvalidosException;
 import com.petshop.exception.RegistroNaoEncontradoException;
+import com.petshop.repository.AgendamentoRepository;
+import com.petshop.repository.ClienteRepository;
 import com.petshop.repository.PetRepository;
 import com.petshop.repository.ServicoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class AgendamentoService {
 
-    private final ServicoRepository servicoRepository;
+    private final AgendamentoRepository agendamentoRepository;
     private final PetRepository petRepository;
+    private final ClienteRepository clienteRepository;
+    private final ServicoRepository servicoRepository;
 
-    public AgendamentoService(ServicoRepository servicoRepository, PetRepository petRepository) {
-        this.servicoRepository = servicoRepository;
+    public AgendamentoService(
+            AgendamentoRepository agendamentoRepository,
+            PetRepository petRepository,
+            ClienteRepository clienteRepository,
+            ServicoRepository servicoRepository
+    ) {
+        this.agendamentoRepository = agendamentoRepository;
         this.petRepository = petRepository;
+        this.clienteRepository = clienteRepository;
+        this.servicoRepository = servicoRepository;
     }
 
-    public Agendamento criar(Agendamento agendamento) {
-        if (agendamento == null) {
-            throw new DadosInvalidosException("Serviço não pode ser nulo.");
+    public AgendamentoResponseDTO criar(AgendamentoRequestDTO dto) {
+        if (dto == null) {
+            throw new DadosInvalidosException("Agendamento não pode ser nulo.");
         }
 
-        if (agendamento.getNome() == null || agendamento.getNome().isBlank()) {
-            throw new DadosInvalidosException("Nome do serviço é obrigatório.");
+        if (dto.getPetId() == null) {
+            throw new DadosInvalidosException("Pet é obrigatório.");
         }
 
-        if (agendamento.getPreco() == null || agendamento.getPreco().signum() <= 0) {
-            throw new DadosInvalidosException("Preço do serviço deve ser maior que zero.");
+        if (dto.getClienteId() == null) {
+            throw new DadosInvalidosException("Cliente é obrigatório.");
         }
 
-        if (agendamento.getStatus() == null || agendamento.getStatus().isBlank()) {
-            throw new DadosInvalidosException("Status do serviço é obrigatório.");
+        if (dto.getServicoId() == null) {
+            throw new DadosInvalidosException("Serviço é obrigatório.");
         }
 
-        if (agendamento.getPet() == null || agendamento.getPet().getId() == null) {
-            throw new DadosInvalidosException("Pet é obrigatório (informe o pet.id).");
+        if (dto.getPreco() == null || dto.getPreco().signum() <= 0) {
+            throw new DadosInvalidosException("Preço do agendamento deve ser maior que zero.");
         }
 
-        Long petId = agendamento.getPet().getId();
-        Pet pet = petRepository.findById(petId)
-                .orElseThrow(() -> new RegistroNaoEncontradoException("Pet não encontrado. id=" + petId));
+        if (dto.getStatus() == null || dto.getStatus().isBlank()) {
+            throw new DadosInvalidosException("Status do agendamento é obrigatório.");
+        }
+
+        Pet pet = petRepository.findById(dto.getPetId())
+                .orElseThrow(() -> new RegistroNaoEncontradoException("Pet não encontrado. id=" + dto.getPetId()));
+
+        Cliente cliente = clienteRepository.findById(dto.getClienteId())
+                .orElseThrow(() -> new RegistroNaoEncontradoException("Cliente não encontrado. id=" + dto.getClienteId()));
+
+        Servico servico = servicoRepository.findById(dto.getServicoId())
+                .orElseThrow(() -> new RegistroNaoEncontradoException("Serviço não encontrado. id=" + dto.getServicoId()));
+
+        Agendamento agendamento = new Agendamento();
         agendamento.setPet(pet);
+        agendamento.setCliente(cliente);
+        agendamento.setServico(servico);
+        agendamento.setPreco(dto.getPreco());
+        agendamento.setStatus(dto.getStatus());
+        agendamento.setObservacao(dto.getObservacao());
 
-        if (agendamento.getData() == null) {
-            agendamento.setData(java.time.LocalDateTime.now());
+        if (dto.getData() != null) {
+            agendamento.setData(dto.getData());
+        } else {
+            agendamento.setData(LocalDateTime.now());
         }
 
-        return servicoRepository.save(agendamento);
+        Agendamento salvo = agendamentoRepository.save(agendamento);
+        return toResponseDTO(salvo);
     }
 
     public List<Agendamento> listarTodos() {
-        return servicoRepository.findAll();
+        return agendamentoRepository.findAll();
     }
 
     public Agendamento buscarPorId(Long id) {
-        return servicoRepository.findById(id)
-                .orElseThrow(() -> new RegistroNaoEncontradoException("Serviço não encontrado. id=" + id));
+        return agendamentoRepository.findById(id)
+                .orElseThrow(() -> new RegistroNaoEncontradoException("Agendamento não encontrado. id=" + id));
     }
 
     public Agendamento atualizar(Long id, Agendamento dadosNovos) {
-
         Agendamento existente = buscarPorId(id);
-
-        if (dadosNovos.getNome() != null && !dadosNovos.getNome().isBlank()) {
-            existente.setNome(dadosNovos.getNome());
-        }
 
         if (dadosNovos.getPreco() != null) {
             if (dadosNovos.getPreco().signum() <= 0) {
-                throw new DadosInvalidosException("Preço do serviço deve ser maior que zero.");
+                throw new DadosInvalidosException("Preço do agendamento deve ser maior que zero.");
             }
             existente.setPreco(dadosNovos.getPreco());
         }
@@ -82,7 +112,7 @@ public class AgendamentoService {
             existente.setStatus(dadosNovos.getStatus());
         }
 
-        if (dadosNovos.getObservacao() != null && !dadosNovos.getObservacao().isBlank()) {
+        if (dadosNovos.getObservacao() != null) {
             existente.setObservacao(dadosNovos.getObservacao());
         }
 
@@ -97,11 +127,47 @@ public class AgendamentoService {
             existente.setPet(pet);
         }
 
-        return servicoRepository.save(existente);
+        if (dadosNovos.getCliente() != null && dadosNovos.getCliente().getId() != null) {
+            Long clienteId = dadosNovos.getCliente().getId();
+            Cliente cliente = clienteRepository.findById(clienteId)
+                    .orElseThrow(() -> new RegistroNaoEncontradoException("Cliente não encontrado. id=" + clienteId));
+            existente.setCliente(cliente);
+        }
+
+        if (dadosNovos.getServico() != null && dadosNovos.getServico().getId() != null) {
+            Long servicoId = dadosNovos.getServico().getId();
+            Servico servico = servicoRepository.findById(servicoId)
+                    .orElseThrow(() -> new RegistroNaoEncontradoException("Serviço não encontrado. id=" + servicoId));
+            existente.setServico(servico);
+        }
+
+        return agendamentoRepository.save(existente);
     }
 
     public void deletar(Long id) {
         Agendamento existente = buscarPorId(id);
-        servicoRepository.delete(existente);
+        agendamentoRepository.delete(existente);
+    }
+
+    private AgendamentoResponseDTO toResponseDTO(Agendamento agendamento) {
+        AgendamentoResponseDTO dto = new AgendamentoResponseDTO();
+
+        dto.setId(agendamento.getId());
+
+        dto.setPetId(agendamento.getPet().getId());
+        dto.setPetNome(agendamento.getPet().getNome());
+
+        dto.setClienteId(agendamento.getCliente().getId());
+        dto.setClienteNome(agendamento.getCliente().getNome());
+
+        dto.setServicoId(agendamento.getServico().getId());
+        dto.setServicoNome(agendamento.getServico().getNome());
+
+        dto.setPreco(agendamento.getPreco());
+        dto.setStatus(agendamento.getStatus());
+        dto.setData(agendamento.getData());
+        dto.setObservacao(agendamento.getObservacao());
+
+        return dto;
     }
 }

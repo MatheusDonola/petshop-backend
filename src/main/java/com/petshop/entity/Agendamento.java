@@ -15,14 +15,14 @@ public class Agendamento {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-    private String nome;
-    private String especie;
-    private String raca;
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
 
-    private String porte;
-    private Integer idade;
-    private String sexo;
-    private BigDecimal peso;
+    @ManyToOne
+    @JoinColumn(name = "servico_id")
+    private Servico servico;
+
     private BigDecimal preco;
     private String status;
     private LocalDateTime data;
@@ -30,73 +30,19 @@ public class Agendamento {
     @Column(length = 500)
     private String observacao;
 
-    public String getEspecie() {
-        return especie;
-    }
-
-    public void setEspecie(String especie) {
-        this.especie = especie;
-    }
-
-    public String getRaca() {
-        return raca;
-    }
-
-    public void setRaca(String raca) {
-        this.raca = raca;
-    }
-
-    public String getPorte() {
-        return porte;
-    }
-
-    public void setPorte(String porte) {
-        this.porte = porte;
-    }
-
-    public Integer getIdade() {
-        return idade;
-    }
-
-    public void setIdade(Integer idade) {
-        this.idade = idade;
-    }
-
-    public String getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
-    }
-
-    public BigDecimal getPeso() {
-        return peso;
-    }
-
-    public void setPeso(BigDecimal peso) {
-        this.peso = peso;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private Cliente cliente;
-
     public Agendamento() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public Pet getPet() { return pet; }
+    public void setPet(Pet pet) { this.pet = pet; }
+
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
+    public Servico getServico() { return servico; }
+    public void setServico(Servico servico) { this.servico = servico; }
 
     public BigDecimal getPreco() { return preco; }
     public void setPreco(BigDecimal preco) { this.preco = preco; }
@@ -109,7 +55,4 @@ public class Agendamento {
 
     public String getObservacao() { return observacao; }
     public void setObservacao(String observacao) { this.observacao = observacao; }
-
-    public Pet getPet() { return pet; }
-    public void setPet(Pet pet) { this.pet = pet; }
 }

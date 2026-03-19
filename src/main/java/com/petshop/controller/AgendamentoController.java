@@ -1,5 +1,7 @@
 package com.petshop.controller;
 
+import com.petshop.dto.AgendamentoRequestDTO;
+import com.petshop.dto.AgendamentoResponseDTO;
 import com.petshop.entity.Agendamento;
 import com.petshop.service.AgendamentoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/servicos")
+@RequestMapping("/agendamentos")
 public class AgendamentoController {
 
     private final AgendamentoService agendamentoService;
@@ -20,18 +22,17 @@ public class AgendamentoController {
     }
 
     @Operation(
-            summary = "Criar serviço",
-            description = "Cria um novo serviço para um pet. Campos obrigatórios: nome, preco, status e pet (pet.id)."
+            summary = "Criar agendamento",
+            description = "Cria um agendamento para um pet. Campos obrigatórios: petId, clienteId, servicoId, preco e status."
     )
     @PostMapping
-    public ResponseEntity<Agendamento> criar(@RequestBody Agendamento agendamento) {
-        Agendamento criado = agendamentoService.criar(agendamento);
-        return ResponseEntity.status(HttpStatus.CREATED).body(criado);
+    public ResponseEntity<AgendamentoResponseDTO> criar(@RequestBody AgendamentoRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(agendamentoService.criar(dto));
     }
 
     @Operation(
-            summary = "Listar serviços",
-            description = "Retorna todos os serviços cadastrados."
+            summary = "Listar agendamentos",
+            description = "Retorna todos os agendamentos cadastrados."
     )
     @GetMapping
     public ResponseEntity<List<Agendamento>> listarTodos() {
@@ -39,8 +40,8 @@ public class AgendamentoController {
     }
 
     @Operation(
-            summary = "Buscar serviço por ID",
-            description = "Retorna um serviço pelo ID. Se não existir, retorna 404."
+            summary = "Buscar agendamento por ID",
+            description = "Retorna um agendamento pelo ID. Se não existir, retorna 404."
     )
     @GetMapping("/{id}")
     public ResponseEntity<Agendamento> buscarPorId(@PathVariable Long id) {
@@ -48,22 +49,22 @@ public class AgendamentoController {
     }
 
     @Operation(
-            summary = "Atualizar serviço",
-            description = "Atualiza parcialmente um serviço. Apenas campos preenchidos serão alterados."
+            summary = "Atualizar agendamento",
+            description = "Atualiza parcialmente um agendamento. Apenas campos preenchidos serão alterados."
     )
     @PutMapping("/{id}")
     public ResponseEntity<String> atualizar(@PathVariable Long id, @RequestBody Agendamento agendamento) {
         agendamentoService.atualizar(id, agendamento);
-        return ResponseEntity.ok("Serviço de id " + id + " alterado com sucesso.");
+        return ResponseEntity.ok("Agendamento de id " + id + " alterado com sucesso.");
     }
 
     @Operation(
-            summary = "Deletar serviço",
-            description = "Remove um serviço pelo ID. Se não existir, retorna 404."
+            summary = "Deletar agendamento",
+            description = "Remove um agendamento pelo ID. Se não existir, retorna 404."
     )
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletar(@PathVariable Long id) {
         agendamentoService.deletar(id);
-        return ResponseEntity.ok("Serviço de id " + id + " deletado com sucesso.");
+        return ResponseEntity.ok("Agendamento de id " + id + " deletado com sucesso.");
     }
 }
