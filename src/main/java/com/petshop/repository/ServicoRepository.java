@@ -1,7 +1,7 @@
 package com.petshop.repository;
 
-import com.petshop.entity.Servico;
+import com.petshop.entity.Agendamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ServicoRepository extends JpaRepository<Servico, Long> {
+public interface ServicoRepository extends JpaRepository<Agendamento, Long> {
 }

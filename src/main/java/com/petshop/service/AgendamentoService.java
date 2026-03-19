@@ -1,7 +1,7 @@
 package com.petshop.service;
 
 import com.petshop.entity.Pet;
-import com.petshop.entity.Servico;
+import com.petshop.entity.Agendamento;
 import com.petshop.exception.DadosInvalidosException;
 import com.petshop.exception.RegistroNaoEncontradoException;
 import com.petshop.repository.PetRepository;
@@ -11,61 +11,61 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ServicoService {
+public class AgendamentoService {
 
     private final ServicoRepository servicoRepository;
     private final PetRepository petRepository;
 
-    public ServicoService(ServicoRepository servicoRepository, PetRepository petRepository) {
+    public AgendamentoService(ServicoRepository servicoRepository, PetRepository petRepository) {
         this.servicoRepository = servicoRepository;
         this.petRepository = petRepository;
     }
 
-    public Servico criar(Servico servico) {
-        if (servico == null) {
+    public Agendamento criar(Agendamento agendamento) {
+        if (agendamento == null) {
             throw new DadosInvalidosException("Serviço não pode ser nulo.");
         }
 
-        if (servico.getNome() == null || servico.getNome().isBlank()) {
+        if (agendamento.getNome() == null || agendamento.getNome().isBlank()) {
             throw new DadosInvalidosException("Nome do serviço é obrigatório.");
         }
 
-        if (servico.getPreco() == null || servico.getPreco().signum() <= 0) {
+        if (agendamento.getPreco() == null || agendamento.getPreco().signum() <= 0) {
             throw new DadosInvalidosException("Preço do serviço deve ser maior que zero.");
         }
 
-        if (servico.getStatus() == null || servico.getStatus().isBlank()) {
+        if (agendamento.getStatus() == null || agendamento.getStatus().isBlank()) {
             throw new DadosInvalidosException("Status do serviço é obrigatório.");
         }
 
-        if (servico.getPet() == null || servico.getPet().getId() == null) {
+        if (agendamento.getPet() == null || agendamento.getPet().getId() == null) {
             throw new DadosInvalidosException("Pet é obrigatório (informe o pet.id).");
         }
 
-        Long petId = servico.getPet().getId();
+        Long petId = agendamento.getPet().getId();
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new RegistroNaoEncontradoException("Pet não encontrado. id=" + petId));
-        servico.setPet(pet);
+        agendamento.setPet(pet);
 
-        if (servico.getData() == null) {
-            servico.setData(java.time.LocalDateTime.now());
+        if (agendamento.getData() == null) {
+            agendamento.setData(java.time.LocalDateTime.now());
         }
 
-        return servicoRepository.save(servico);
+        return servicoRepository.save(agendamento);
     }
 
-    public List<Servico> listarTodos() {
+    public List<Agendamento> listarTodos() {
         return servicoRepository.findAll();
     }
 
-    public Servico buscarPorId(Long id) {
+    public Agendamento buscarPorId(Long id) {
         return servicoRepository.findById(id)
                 .orElseThrow(() -> new RegistroNaoEncontradoException("Serviço não encontrado. id=" + id));
     }
 
-    public Servico atualizar(Long id, Servico dadosNovos) {
+    public Agendamento atualizar(Long id, Agendamento dadosNovos) {
 
-        Servico existente = buscarPorId(id);
+        Agendamento existente = buscarPorId(id);
 
         if (dadosNovos.getNome() != null && !dadosNovos.getNome().isBlank()) {
             existente.setNome(dadosNovos.getNome());
@@ -101,7 +101,7 @@ public class ServicoService {
     }
 
     public void deletar(Long id) {
-        Servico existente = buscarPorId(id);
+        Agendamento existente = buscarPorId(id);
         servicoRepository.delete(existente);
     }
 }

@@ -30,14 +30,14 @@ public class Pet {
 
     @JsonIgnore
     @OneToMany(mappedBy = "pet")
-    private List<Servico> servicos;
+    private List<Agendamento> agendamentos;
 
-    public List<Servico> getServicos() {
-        return servicos;
+    public List<Agendamento> getServicos() {
+        return agendamentos;
     }
 
-    public void setServicos(List<Servico> servicos) {
-        this.servicos = servicos;
+    public void setServicos(List<Agendamento> agendamentos) {
+        this.agendamentos = agendamentos;
     }
 
     public Integer getIdade() {

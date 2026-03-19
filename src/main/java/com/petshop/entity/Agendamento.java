@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-public class Servico {
+public class Agendamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -90,7 +90,7 @@ public class Servico {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    public Servico() {}
+    public Agendamento() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
