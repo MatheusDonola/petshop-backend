@@ -89,63 +89,69 @@ public class AgendamentoService {
         return toResponseDTO(salvo);
     }
 
-    public List<Agendamento> listarTodos() {
-        return agendamentoRepository.findAll();
+    public List<AgendamentoResponseDTO> listarTodos() {
+        return agendamentoRepository.findAll()
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 
-    public Agendamento buscarPorId(Long id) {
-        return agendamentoRepository.findById(id)
+    public AgendamentoResponseDTO buscarPorId(Long id) {
+        Agendamento agendamento = agendamentoRepository.findById(id)
                 .orElseThrow(() -> new RegistroNaoEncontradoException("Agendamento não encontrado. id=" + id));
+
+        return toResponseDTO(agendamento);
     }
 
-    public Agendamento atualizar(Long id, Agendamento dadosNovos) {
-        Agendamento existente = buscarPorId(id);
+    public AgendamentoResponseDTO atualizar(Long id, AgendamentoRequestDTO dto) {
+        Agendamento existente = agendamentoRepository.findById(id)
+                .orElseThrow(() -> new RegistroNaoEncontradoException("Agendamento não encontrado. id=" + id));
 
-        if (dadosNovos.getPreco() != null) {
-            if (dadosNovos.getPreco().signum() <= 0) {
-                throw new DadosInvalidosException("Preço do agendamento deve ser maior que zero.");
-            }
-            existente.setPreco(dadosNovos.getPreco());
-        }
-
-        if (dadosNovos.getStatus() != null && !dadosNovos.getStatus().isBlank()) {
-            existente.setStatus(dadosNovos.getStatus());
-        }
-
-        if (dadosNovos.getObservacao() != null) {
-            existente.setObservacao(dadosNovos.getObservacao());
-        }
-
-        if (dadosNovos.getData() != null) {
-            existente.setData(dadosNovos.getData());
-        }
-
-        if (dadosNovos.getPet() != null && dadosNovos.getPet().getId() != null) {
-            Long petId = dadosNovos.getPet().getId();
-            Pet pet = petRepository.findById(petId)
-                    .orElseThrow(() -> new RegistroNaoEncontradoException("Pet não encontrado. id=" + petId));
+        if (dto.getPetId() != null) {
+            Pet pet = petRepository.findById(dto.getPetId())
+                    .orElseThrow(() -> new RegistroNaoEncontradoException("Pet não encontrado. id=" + dto.getPetId()));
             existente.setPet(pet);
         }
 
-        if (dadosNovos.getCliente() != null && dadosNovos.getCliente().getId() != null) {
-            Long clienteId = dadosNovos.getCliente().getId();
-            Cliente cliente = clienteRepository.findById(clienteId)
-                    .orElseThrow(() -> new RegistroNaoEncontradoException("Cliente não encontrado. id=" + clienteId));
+        if (dto.getClienteId() != null) {
+            Cliente cliente = clienteRepository.findById(dto.getClienteId())
+                    .orElseThrow(() -> new RegistroNaoEncontradoException("Cliente não encontrado. id=" + dto.getClienteId()));
             existente.setCliente(cliente);
         }
 
-        if (dadosNovos.getServico() != null && dadosNovos.getServico().getId() != null) {
-            Long servicoId = dadosNovos.getServico().getId();
-            Servico servico = servicoRepository.findById(servicoId)
-                    .orElseThrow(() -> new RegistroNaoEncontradoException("Serviço não encontrado. id=" + servicoId));
+        if (dto.getServicoId() != null) {
+            Servico servico = servicoRepository.findById(dto.getServicoId())
+                    .orElseThrow(() -> new RegistroNaoEncontradoException("Serviço não encontrado. id=" + dto.getServicoId()));
             existente.setServico(servico);
         }
 
-        return agendamentoRepository.save(existente);
+        if (dto.getPreco() != null) {
+            if (dto.getPreco().signum() <= 0) {
+                throw new DadosInvalidosException("Preço do agendamento deve ser maior que zero.");
+            }
+            existente.setPreco(dto.getPreco());
+        }
+
+        if (dto.getStatus() != null && !dto.getStatus().isBlank()) {
+            existente.setStatus(dto.getStatus());
+        }
+
+        if (dto.getObservacao() != null) {
+            existente.setObservacao(dto.getObservacao());
+        }
+
+        if (dto.getData() != null) {
+            existente.setData(dto.getData());
+        }
+
+        Agendamento atualizado = agendamentoRepository.save(existente);
+        return toResponseDTO(atualizado);
     }
 
     public void deletar(Long id) {
-        Agendamento existente = buscarPorId(id);
+        Agendamento existente = agendamentoRepository.findById(id)
+                .orElseThrow(() -> new RegistroNaoEncontradoException("Agendamento não encontrado. id=" + id));
+
         agendamentoRepository.delete(existente);
     }
 

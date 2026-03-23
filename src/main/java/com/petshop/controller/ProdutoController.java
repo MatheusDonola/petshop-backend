@@ -1,6 +1,7 @@
 package com.petshop.controller;
 
-import com.petshop.entity.Produto;
+import com.petshop.dto.ProdutoRequestDTO;
+import com.petshop.dto.ProdutoResponseDTO;
 import com.petshop.service.ProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
@@ -21,12 +22,11 @@ public class ProdutoController {
 
     @Operation(
             summary = "Criar produto",
-            description = "Cria um novo produto. Campos obrigatórios: nome, preco e estoque."
+            description = "Cria um produto. Campos obrigatórios: nome, estoque e preco."
     )
     @PostMapping
-    public ResponseEntity<Produto> criar(@RequestBody Produto produto) {
-        Produto criado = produtoService.criar(produto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(criado);
+    public ResponseEntity<ProdutoResponseDTO> criar(@RequestBody ProdutoRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(produtoService.criar(dto));
     }
 
     @Operation(
@@ -34,7 +34,7 @@ public class ProdutoController {
             description = "Retorna todos os produtos cadastrados."
     )
     @GetMapping
-    public ResponseEntity<List<Produto>> listarTodos() {
+    public ResponseEntity<List<ProdutoResponseDTO>> listarTodos() {
         return ResponseEntity.ok(produtoService.listarTodos());
     }
 
@@ -43,20 +43,18 @@ public class ProdutoController {
             description = "Retorna um produto pelo ID. Se não existir, retorna 404."
     )
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<ProdutoResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(produtoService.buscarPorId(id));
     }
 
     @Operation(
             summary = "Atualizar produto",
-            description = "Atualiza parcialmente um produto. Apenas campos preenchidos são alterados."
+            description = "Atualiza parcialmente um produto. Apenas campos preenchidos serão alterados."
     )
     @PutMapping("/{id}")
-    public ResponseEntity<String> atualizar(@PathVariable Long id, @RequestBody Produto produto) {
-        produtoService.atualizar(id, produto);
-        return ResponseEntity.ok("Produto de id " + id + " alterado com sucesso.");
+    public ResponseEntity<ProdutoResponseDTO> atualizar(@PathVariable Long id, @RequestBody ProdutoRequestDTO dto) {
+        return ResponseEntity.ok(produtoService.atualizar(id, dto));
     }
-
 
     @Operation(
             summary = "Deletar produto",
@@ -68,4 +66,3 @@ public class ProdutoController {
         return ResponseEntity.ok("Produto de id " + id + " deletado com sucesso.");
     }
 }
-

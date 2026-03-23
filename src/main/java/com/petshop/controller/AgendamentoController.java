@@ -2,7 +2,6 @@ package com.petshop.controller;
 
 import com.petshop.dto.AgendamentoRequestDTO;
 import com.petshop.dto.AgendamentoResponseDTO;
-import com.petshop.entity.Agendamento;
 import com.petshop.service.AgendamentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
@@ -35,7 +34,7 @@ public class AgendamentoController {
             description = "Retorna todos os agendamentos cadastrados."
     )
     @GetMapping
-    public ResponseEntity<List<Agendamento>> listarTodos() {
+    public ResponseEntity<List<AgendamentoResponseDTO>> listarTodos() {
         return ResponseEntity.ok(agendamentoService.listarTodos());
     }
 
@@ -44,7 +43,7 @@ public class AgendamentoController {
             description = "Retorna um agendamento pelo ID. Se não existir, retorna 404."
     )
     @GetMapping("/{id}")
-    public ResponseEntity<Agendamento> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<AgendamentoResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(agendamentoService.buscarPorId(id));
     }
 
@@ -53,9 +52,8 @@ public class AgendamentoController {
             description = "Atualiza parcialmente um agendamento. Apenas campos preenchidos serão alterados."
     )
     @PutMapping("/{id}")
-    public ResponseEntity<String> atualizar(@PathVariable Long id, @RequestBody Agendamento agendamento) {
-        agendamentoService.atualizar(id, agendamento);
-        return ResponseEntity.ok("Agendamento de id " + id + " alterado com sucesso.");
+    public ResponseEntity<AgendamentoResponseDTO> atualizar(@PathVariable Long id, @RequestBody AgendamentoRequestDTO dto) {
+        return ResponseEntity.ok(agendamentoService.atualizar(id, dto));
     }
 
     @Operation(

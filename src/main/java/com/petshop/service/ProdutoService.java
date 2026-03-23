@@ -1,12 +1,13 @@
 package com.petshop.service;
 
+import com.petshop.dto.ProdutoRequestDTO;
+import com.petshop.dto.ProdutoResponseDTO;
 import com.petshop.entity.Produto;
 import com.petshop.exception.DadosInvalidosException;
 import com.petshop.exception.RegistroNaoEncontradoException;
 import com.petshop.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -18,69 +19,101 @@ public class ProdutoService {
         this.produtoRepository = produtoRepository;
     }
 
-    public Produto criar(Produto produto) {
-        validarCriacao(produto);
-        return produtoRepository.save(produto);
+    public ProdutoResponseDTO criar(ProdutoRequestDTO dto) {
+        validar(dto);
+
+        Produto produto = new Produto();
+        produto.setNome(dto.getNome());
+        produto.setMarca(dto.getMarca());
+        produto.setDescricao(dto.getDescricao());
+        produto.setEstoque(dto.getEstoque());
+        produto.setPreco(dto.getPreco());
+
+        Produto salvo = produtoRepository.save(produto);
+        return toResponseDTO(salvo);
     }
 
-    public List<Produto> listarTodos() {
-        return produtoRepository.findAll();
+    public List<ProdutoResponseDTO> listarTodos() {
+        return produtoRepository.findAll()
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 
-    public Produto buscarPorId(Long id) {
-        return produtoRepository.findById(id)
+    public ProdutoResponseDTO buscarPorId(Long id) {
+        Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new RegistroNaoEncontradoException("Produto não encontrado. id=" + id));
+
+        return toResponseDTO(produto);
     }
 
-    public Produto atualizar(Long id, Produto dadosNovos) {
-        Produto existente = buscarPorId(id);
+    public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dto) {
+        Produto existente = produtoRepository.findById(id)
+                .orElseThrow(() -> new RegistroNaoEncontradoException("Produto não encontrado. id=" + id));
 
-        if (dadosNovos.getNome() != null) {
-            existente.setNome(dadosNovos.getNome());
+        if (dto.getNome() != null && !dto.getNome().isBlank()) {
+            existente.setNome(dto.getNome());
         }
 
-        if (dadosNovos.getDescricao() != null) {
-            existente.setDescricao(dadosNovos.getDescricao());
+        if (dto.getMarca() != null) {
+            existente.setMarca(dto.getMarca());
         }
 
-        if (dadosNovos.getMarca() != null) {
-            existente.setMarca(dadosNovos.getMarca());
+        if (dto.getDescricao() != null) {
+            existente.setDescricao(dto.getDescricao());
         }
 
-        if (dadosNovos.getPreco() != null) {
-            if (dadosNovos.getPreco().compareTo(BigDecimal.ZERO) <= 0) {
-                throw new DadosInvalidosException("Preço deve ser maior que 0.");
-            }
-            existente.setPreco(dadosNovos.getPreco());
-        }
-
-        if (dadosNovos.getEstoque() != null) {
-            if (dadosNovos.getEstoque() < 0) {
+        if (dto.getEstoque() != null) {
+            if (dto.getEstoque() < 0) {
                 throw new DadosInvalidosException("Estoque não pode ser negativo.");
             }
-            existente.setEstoque(dadosNovos.getEstoque());
+            existente.setEstoque(dto.getEstoque());
         }
 
-        return produtoRepository.save(existente);
+        if (dto.getPreco() != null) {
+            if (dto.getPreco().signum() <= 0) {
+                throw new DadosInvalidosException("Preço deve ser maior que zero.");
+            }
+            existente.setPreco(dto.getPreco());
+        }
+
+        Produto atualizado = produtoRepository.save(existente);
+        return toResponseDTO(atualizado);
     }
 
     public void deletar(Long id) {
-        Produto existente = buscarPorId(id);
-        produtoRepository.delete(existente);
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new RegistroNaoEncontradoException("Produto não encontrado. id=" + id));
+
+        produtoRepository.delete(produto);
     }
 
-    private void validarCriacao(Produto produto) {
-        if (produto == null) {
+    private void validar(ProdutoRequestDTO dto) {
+        if (dto == null) {
             throw new DadosInvalidosException("Produto não pode ser nulo.");
         }
-        if (produto.getNome() == null || produto.getNome().isBlank()) {
-            throw new DadosInvalidosException("Nome é obrigatório.");
+
+        if (dto.getNome() == null || dto.getNome().isBlank()) {
+            throw new DadosInvalidosException("Nome do produto é obrigatório.");
         }
-        if (produto.getPreco() == null || produto.getPreco().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new DadosInvalidosException("Preço é obrigatório e deve ser maior que 0.");
+
+        if (dto.getEstoque() == null || dto.getEstoque() < 0) {
+            throw new DadosInvalidosException("Estoque deve ser zero ou maior.");
         }
-        if (produto.getEstoque() == null || produto.getEstoque() < 0) {
-            throw new DadosInvalidosException("Estoque é obrigatório e não pode ser negativo.");
+
+        if (dto.getPreco() == null || dto.getPreco().signum() <= 0) {
+            throw new DadosInvalidosException("Preço deve ser maior que zero.");
         }
+    }
+
+    private ProdutoResponseDTO toResponseDTO(Produto produto) {
+        ProdutoResponseDTO dto = new ProdutoResponseDTO();
+        dto.setId(produto.getId());
+        dto.setNome(produto.getNome());
+        dto.setMarca(produto.getMarca());
+        dto.setDescricao(produto.getDescricao());
+        dto.setEstoque(produto.getEstoque());
+        dto.setPreco(produto.getPreco());
+        return dto;
     }
 }
