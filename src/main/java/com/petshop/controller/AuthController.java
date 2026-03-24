@@ -1,13 +1,18 @@
 package com.petshop.controller;
 
+import com.petshop.dto.LoginRequest;
+import com.petshop.dto.LoginResponse;
 import com.petshop.dto.RegisterRequest;
 import com.petshop.dto.RegisterResponse;
 import com.petshop.entity.Usuario;
 import com.petshop.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("/auth")
@@ -15,6 +20,9 @@ public class AuthController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
@@ -27,5 +35,29 @@ public class AuthController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getSenha()
+                    );
+
+            authenticationManager.authenticate(authToken);
+
+            LoginResponse response = new LoginResponse(
+                    "Login realizado com sucesso",
+                    request.getEmail()
+            );
+
+            return ResponseEntity.ok(response);
+
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Email ou senha inválidos.");
+        }
     }
 }
