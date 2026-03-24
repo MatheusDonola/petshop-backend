@@ -13,10 +13,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import com.petshop.service.JwtService;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
+    @Autowired
+    private JwtService jwtService;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -48,9 +53,13 @@ public class AuthController {
 
             authenticationManager.authenticate(authToken);
 
+            UserDetails userDetails = usuarioService.buscarPorEmail(request.getEmail());
+            String jwtToken = jwtService.gerarToken(userDetails);
+
             LoginResponse response = new LoginResponse(
                     "Login realizado com sucesso",
-                    request.getEmail()
+                    request.getEmail(),
+                    jwtToken
             );
 
             return ResponseEntity.ok(response);
