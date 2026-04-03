@@ -7,7 +7,8 @@ import Carrossel from "../components/Carrossel/Carrossel";
 
 function Home() {
   return (
-    <div>
+    <div className="home-container">
+
       <div className="home-cards">
         <Card
           titulo="Produtos"
@@ -28,9 +29,8 @@ function Home() {
         />
       </div>
 
-      <div className="home-carrossel">
-        <Carrossel />
-      </div>
+      <Carrossel />
+
     </div>
   );
 }
