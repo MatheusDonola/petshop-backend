@@ -81,7 +81,7 @@ O sistema permite o gerenciamento completo de clientes, pets, produtos, serviço
 
 ---
 
-## 🧱 Arquitetura
+## Arquitetura
 
 O projeto segue o padrão:
 
