@@ -5,3 +5,26 @@
   margin-top: 40px;
   flex-wrap: wrap;
 }
+
+.home-carrossel {
+  width: 100%;
+  margin-top: 40px;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+.card-produto {
+  flex: 0 0 calc(100% / 5);
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+.carrossel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  margin: 40px 0;
+  border: 2px solid red;
+}
