@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -43,15 +44,9 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
-                        .requestMatchers("/produtos/**").permitAll()
-                        .requestMatchers("/pets/**").hasAnyRole("CLIENTE", "ADMIN")
-                        .requestMatchers("/agendamentos/**").hasAnyRole("CLIENTE", "FUNCIONARIO", "ADMIN")
-                        .requestMatchers("/clientes/**").hasAnyRole("FUNCIONARIO", "ADMIN")
-                        .requestMatchers("/servicos/**").hasAnyRole("FUNCIONARIO", "ADMIN")
-                        .requestMatchers("/usuarios/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                        .requestMatchers("/produtos", "/produtos/**").permitAll()
+                        .anyRequest().permitAll()
+                );
 
         return http.build();
     }
