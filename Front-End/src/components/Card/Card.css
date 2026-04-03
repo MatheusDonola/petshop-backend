@@ -1,0 +1,26 @@
+.card {
+  width: 280px;
+
+  background-color: #e0e0e0ab;
+
+  border-radius: 16px;
+
+  padding: 20px;
+
+  text-align: center;
+}
+
+.card img {
+  width: 160px;
+  height: auto;
+
+  margin-top: 15px;
+}
+
+.card h2 {
+  color: black;
+}
+
+.card-descricao {
+  color: rgb(104, 103, 103)
+}
