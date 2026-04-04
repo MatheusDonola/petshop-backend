@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function CardProduto({ produto }) {
+  const navigate = useNavigate();
+
   return (
     <div className="card-produto">
       <div className="card-produto-conteudo">
@@ -16,7 +20,10 @@ function CardProduto({ produto }) {
           R$ {Number(produto.preco).toFixed(2).replace(".", ",")}
         </p>
 
-        <button className="card-produto-botao">
+        <button
+          className="card-produto-botao"
+          onClick={() => navigate(`/produto/${produto.id}`)}
+        >
           Ver produto
         </button>
       </div>
