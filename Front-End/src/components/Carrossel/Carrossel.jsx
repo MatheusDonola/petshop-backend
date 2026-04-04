@@ -1,48 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Carrossel.css";
 import CardProduto from "./CardProduto";
 
 function Carrossel() {
-
   const [indiceAtual, setIndiceAtual] = useState(0);
+  const [produtos, setProdutos] = useState([]);
 
-  const produtos = [
-  {
-    id: 1,
-    nome: "Ração Premium",
-    preco: "R$ 89,90"
-  },
-  {
-    id: 2,
-    nome: "Coleira Azul",
-    preco: "R$ 39,90"
-  },
-  {
-    id: 3,
-    nome: "Brinquedo Mordedor",
-    preco: "R$ 24,90"
-  },
-  {
-    id: 4,
-    nome: "Shampoo Pet",
-    preco: "R$ 32,90"
-  },
-  {
-    id: 5,
-    nome: "Caminha",
-    preco: "R$ 119,90"
-  },
-  {
-    id: 6,
-    nome: "Peitoral",
-    preco: "R$ 49,90"
-  },
-  {
-    id: 7,
-    nome: "Pote de Ração",
-    preco: "R$ 27,90"
-  }
-];
+  // Buscar produtos do backend
+  useEffect(() => {
+    fetch("http://localhost:8080/produtos")
+      .then((resposta) => resposta.json())
+      .then((dados) => setProdutos(dados))
+      .catch((erro) =>
+        console.error("Erro ao buscar produtos:", erro)
+      );
+  }, []);
 
   const proximo = () => {
     if (indiceAtual < produtos.length - 5) {
@@ -59,8 +31,13 @@ function Carrossel() {
   return (
     <div className="carrossel">
 
-      <button className="botao-carrossel" onClick={anterior}>
-         <span className= "seta-esquerda">◀</span>
+      <button
+        className="botao-carrossel"
+        onClick={anterior}
+      >
+        <span className="seta-esquerda">
+          ◀
+        </span>
       </button>
 
       <div className="carrossel-janela">
@@ -79,8 +56,13 @@ function Carrossel() {
         </div>
       </div>
 
-      <button className="botao-carrossel" onClick={proximo}>
-        <span className="seta-direita">▶</span>
+      <button
+        className="botao-carrossel"
+        onClick={proximo}
+      >
+        <span className="seta-direita">
+          ▶
+        </span>
       </button>
 
     </div>
