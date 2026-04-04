@@ -6,7 +6,6 @@ function Carrossel() {
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [produtos, setProdutos] = useState([]);
 
-  // Buscar produtos do backend
   useEffect(() => {
     fetch("http://localhost:8080/produtos")
       .then((resposta) => resposta.json())
