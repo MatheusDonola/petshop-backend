@@ -60,7 +60,7 @@ function Carrossel() {
     <div className="carrossel">
 
       <button className="botao-carrossel" onClick={anterior}>
-        ◀
+         <span className= "seta-esquerda">◀</span>
       </button>
 
       <div className="carrossel-janela">
@@ -80,7 +80,7 @@ function Carrossel() {
       </div>
 
       <button className="botao-carrossel" onClick={proximo}>
-        ▶
+        <span className="seta-direita">▶</span>
       </button>
 
     </div>
