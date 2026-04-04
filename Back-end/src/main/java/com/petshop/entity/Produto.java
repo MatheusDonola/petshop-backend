@@ -15,6 +15,7 @@ public class Produto {
     private BigDecimal preco;
     private Integer estoque;
     private String marca;
+    private String imagemUrl;
 
     public Long getId() {
         return id;
@@ -62,5 +63,13 @@ public class Produto {
 
     public void setMarca(String marca) {
         this.marca = marca;
+    }
+
+    public String getImagemUrl() {
+        return imagemUrl;
+    }
+
+    public void setImagemUrl(String imagemUrl) {
+        this.imagemUrl = imagemUrl;
     }
 }

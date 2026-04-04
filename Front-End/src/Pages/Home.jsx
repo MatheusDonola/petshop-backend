@@ -18,13 +18,13 @@ function Home() {
 
         <Card
           titulo="Serviços"
-          descricao="Aqui você encontra tudo que ele precisa para se cuidar"
+          descricao="Aqui você encontra todos os cuidados que seu pet precisa"
           imagem={card2Img}
         />
 
         <Card
           titulo="Cadastre-se"
-          descricao="Ainda não se cadastrou? Cadastre seus pets!"
+          descricao="Ainda não se cadastrou? Cadastre-se e cadastre seus pets para ter acesso aos serviços e melhores promoções!"
           imagem={card3Img}
         />
       </div>
