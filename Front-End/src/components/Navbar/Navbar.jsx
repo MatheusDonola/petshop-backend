@@ -12,12 +12,17 @@ function Navbar() {
   
   return (
     <header className="navbar">
-      <div className="navbar__logo">
+            <div 
+        className="navbar__logo"
+        onClick={() => navigate("/")}
+        style={{ cursor: "pointer" }}
+      >
         <img
           src={logo}
           alt="PetHub Logo"
           className="navbar__logo-img"
         />
+
         <h1>PetHub</h1>
       </div>
 
