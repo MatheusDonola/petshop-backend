@@ -28,6 +28,7 @@ public class ProdutoService {
         produto.setDescricao(dto.getDescricao());
         produto.setEstoque(dto.getEstoque());
         produto.setPreco(dto.getPreco());
+        produto.setImagemUrl(dto.getImagemUrl());
 
         Produto salvo = produtoRepository.save(produto);
         return toResponseDTO(salvo);
@@ -77,6 +78,10 @@ public class ProdutoService {
             existente.setPreco(dto.getPreco());
         }
 
+        if (dto.getImagemUrl() != null) {
+            existente.setImagemUrl(dto.getImagemUrl());
+        }
+
         Produto atualizado = produtoRepository.save(existente);
         return toResponseDTO(atualizado);
     }
@@ -114,6 +119,7 @@ public class ProdutoService {
         dto.setDescricao(produto.getDescricao());
         dto.setEstoque(produto.getEstoque());
         dto.setPreco(produto.getPreco());
+        dto.setImagemUrl(produto.getImagemUrl());
         return dto;
     }
 }

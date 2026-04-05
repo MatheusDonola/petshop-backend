@@ -4,8 +4,12 @@ import carrinho from "../../assets/carrinho.png";
 import perfil from "../../assets/perfil.png";
 import pata from "../../assets/pata.png";
 import lupa from "../../assets/lupa.png";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
+
+  const navigate = useNavigate();
+  
   return (
     <header className="navbar">
       <div className="navbar__logo">
@@ -52,6 +56,7 @@ function Navbar() {
         <a href="#" className="navbar__carrinho">
           <img
             src={carrinho}
+            onClick={() => navigate("/carrinho")}
             alt="Carrinho"
             className="navbar__carrinho-img"
           />

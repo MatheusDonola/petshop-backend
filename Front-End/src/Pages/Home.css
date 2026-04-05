@@ -1,0 +1,55 @@
+.carrossel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  margin: 24px 0;
+}
+
+.card-produto {
+  flex: 0 0 calc(100% / 5);
+  box-sizing: border-box;
+  padding: 8px;
+}
+
+.card-produto-conteudo {
+  background-color: #f5f5f5;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  min-height: 250px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-produto-placeholder {
+  width: 100%;
+  height: 145px;
+  background-color: #ddd;
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: bold;
+  color: #555;
+}
+
+.home-cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}

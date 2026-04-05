@@ -9,6 +9,7 @@ public class ProdutoRequestDTO {
     private String descricao;
     private Integer estoque;
     private BigDecimal preco;
+    private String imagemUrl;
 
     public ProdutoRequestDTO() {
     }
@@ -51,5 +52,13 @@ public class ProdutoRequestDTO {
 
     public void setPreco(BigDecimal preco) {
         this.preco = preco;
+    }
+
+    public String getImagemUrl() {
+        return imagemUrl;
+    }
+
+    public void setImagemUrl(String imagemUrl) {
+        this.imagemUrl = imagemUrl;
     }
 }

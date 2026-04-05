@@ -1,0 +1,38 @@
+import Card from "../components/Card/Card";
+import card1Img from "../assets/card1.svg";
+import card2Img from "../assets/card2.svg";
+import card3Img from "../assets/card3.svg";
+import "./Home.css";
+import Carrossel from "../components/Carrossel/Carrossel";
+
+function Home() {
+  return (
+    <div className="home-container">
+
+      <div className="home-cards">
+        <Card
+          titulo="Produtos"
+          descricao="Temos os melhores produtos para seu precioso companheiro"
+          imagem={card1Img}
+        />
+
+        <Card
+          titulo="Serviços"
+          descricao="Aqui você encontra todos os cuidados que seu pet precisa"
+          imagem={card2Img}
+        />
+
+        <Card
+          titulo="Cadastre-se"
+          descricao="Ainda não se cadastrou? Cadastre-se e cadastre seus pets para ter acesso aos serviços e melhores promoções!"
+          imagem={card3Img}
+        />
+      </div>
+
+      <Carrossel />
+
+    </div>
+  );
+}
+
+export default Home;
